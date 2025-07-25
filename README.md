@@ -2,6 +2,14 @@
 
 A Flutter-based playground for generating and editing mobile UI layouts using natural language commands. This project demonstrates how to use LLMs (Large Language Models) and hardcoded mappings to convert user prompts into UI instructions.
 
+## Screenshots
+
+<p align="center">
+  <img src="screenshots/screenshot1.png" alt="Main UI" width="250"/>
+  <img src="screenshots/screenshot2.png" alt="Add Prompts Example" width="250"/>
+  <img src="screenshots/screenshot3.png" alt="User Prompts History" width="250"/>
+</p>
+
 ## Features
 
 - **Natural Language UI Creation:** Add buttons, containers, text fields, cards, and more using simple text commands.
