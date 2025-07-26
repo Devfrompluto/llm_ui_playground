@@ -24,14 +24,14 @@ class _DynamicComponentState extends State<DynamicComponent>
   late Animation<double> _slideAnimation;
   late Animation<double> _fadeAnimation;
   bool _isPressed = false;
-  
+
   // State variables for interactive components
   bool _switchValue = false;
   double _sliderValue = 50.0;
   bool _checkboxValue = false;
   String _radioValue = '';
   String _dropdownValue = '';
-  double _progressValue = 0.5;
+  final double _progressValue = 0.5;
 
   @override
   void initState() {
@@ -281,8 +281,10 @@ class _DynamicComponentState extends State<DynamicComponent>
   }
 
   Widget _buildText(BuildContext context) {
-    final color = PromptService.getColorFromString(widget.instruction.color) ?? 
-                  Theme.of(context).textTheme.bodyLarge?.color ?? Colors.black;
+    final color =
+        PromptService.getColorFromString(widget.instruction.color) ??
+        Theme.of(context).textTheme.bodyLarge?.color ??
+        Colors.black;
     final fontSize = widget.instruction.size ?? 16.0;
 
     return Container(
@@ -296,18 +298,11 @@ class _DynamicComponentState extends State<DynamicComponent>
             decoration: BoxDecoration(
               color: Theme.of(context).cardColor,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: Colors.grey.withOpacity(0.3),
-                width: 1,
-              ),
+              border: Border.all(color: Colors.grey.withOpacity(0.3), width: 1),
             ),
             child: Row(
               children: [
-                Icon(
-                  Icons.text_fields,
-                  color: color,
-                  size: 20,
-                ),
+                Icon(Icons.text_fields, color: color, size: 20),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
@@ -375,10 +370,7 @@ class _DynamicComponentState extends State<DynamicComponent>
                     const SizedBox(height: 12),
                     Text(
                       'This is a card component that can contain other widgets.',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey[600],
-                      ),
+                      style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                     ),
                   ],
                 ),
@@ -394,8 +386,10 @@ class _DynamicComponentState extends State<DynamicComponent>
   // NEW COMPONENTS IMPLEMENTATION
 
   Widget _buildSwitch(BuildContext context) {
-    final color = PromptService.getColorFromString(widget.instruction.color) ?? Colors.blue;
-    
+    final color =
+        PromptService.getColorFromString(widget.instruction.color) ??
+        Colors.blue;
+
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4),
       child: Stack(
@@ -416,7 +410,10 @@ class _DynamicComponentState extends State<DynamicComponent>
                 Expanded(
                   child: Text(
                     widget.instruction.label ?? 'Toggle Switch',
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
                 Switch(
@@ -437,8 +434,10 @@ class _DynamicComponentState extends State<DynamicComponent>
   }
 
   Widget _buildSlider(BuildContext context) {
-    final color = PromptService.getColorFromString(widget.instruction.color) ?? Colors.blue;
-    
+    final color =
+        PromptService.getColorFromString(widget.instruction.color) ??
+        Colors.blue;
+
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4),
       child: Stack(
@@ -461,12 +460,18 @@ class _DynamicComponentState extends State<DynamicComponent>
                     const SizedBox(width: 12),
                     Text(
                       widget.instruction.label ?? 'Slider',
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                     const Spacer(),
                     Text(
                       '${_sliderValue.round()}',
-                      style: TextStyle(color: color, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        color: color,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 ),
@@ -492,8 +497,10 @@ class _DynamicComponentState extends State<DynamicComponent>
   }
 
   Widget _buildCheckbox(BuildContext context) {
-    final color = PromptService.getColorFromString(widget.instruction.color) ?? Colors.blue;
-    
+    final color =
+        PromptService.getColorFromString(widget.instruction.color) ??
+        Colors.blue;
+
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4),
       child: Stack(
@@ -514,14 +521,19 @@ class _DynamicComponentState extends State<DynamicComponent>
                   activeColor: color,
                   onChanged: (value) {
                     setState(() => _checkboxValue = value ?? false);
-                    _showInteractionSnackbar('Checkbox ${value! ? 'checked' : 'unchecked'}');
+                    _showInteractionSnackbar(
+                      'Checkbox ${value! ? 'checked' : 'unchecked'}',
+                    );
                   },
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
                     widget.instruction.label ?? 'Checkbox Option',
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
               ],
@@ -534,10 +546,12 @@ class _DynamicComponentState extends State<DynamicComponent>
   }
 
   Widget _buildRadio(BuildContext context) {
-    final color = PromptService.getColorFromString(widget.instruction.color) ?? Colors.blue;
+    final color =
+        PromptService.getColorFromString(widget.instruction.color) ??
+        Colors.blue;
     final options = ['Option 1', 'Option 2', 'Option 3'];
     if (_radioValue.isEmpty) _radioValue = options.first;
-    
+
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4),
       child: Stack(
@@ -560,22 +574,27 @@ class _DynamicComponentState extends State<DynamicComponent>
                     const SizedBox(width: 12),
                     Text(
                       widget.instruction.label ?? 'Radio Options',
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 8),
-                ...options.map((option) => RadioListTile<String>(
-                  title: Text(option),
-                  value: option,
-                  groupValue: _radioValue,
-                  activeColor: color,
-                  contentPadding: EdgeInsets.zero,
-                  onChanged: (value) {
-                    setState(() => _radioValue = value!);
-                    _showInteractionSnackbar('Selected: $value');
-                  },
-                )),
+                ...options.map(
+                  (option) => RadioListTile<String>(
+                    title: Text(option),
+                    value: option,
+                    groupValue: _radioValue,
+                    activeColor: color,
+                    contentPadding: EdgeInsets.zero,
+                    onChanged: (value) {
+                      setState(() => _radioValue = value!);
+                      _showInteractionSnackbar('Selected: $value');
+                    },
+                  ),
+                ),
               ],
             ),
           ),
@@ -586,10 +605,12 @@ class _DynamicComponentState extends State<DynamicComponent>
   }
 
   Widget _buildDropdown(BuildContext context) {
-    final color = PromptService.getColorFromString(widget.instruction.color) ?? Colors.blue;
+    final color =
+        PromptService.getColorFromString(widget.instruction.color) ??
+        Colors.blue;
     final options = ['Select Option', 'Option A', 'Option B', 'Option C'];
     if (_dropdownValue.isEmpty) _dropdownValue = options.first;
-    
+
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4),
       child: Stack(
@@ -612,10 +633,15 @@ class _DynamicComponentState extends State<DynamicComponent>
                     value: _dropdownValue,
                     isExpanded: true,
                     underline: const SizedBox(),
-                    items: options.map((option) => DropdownMenuItem(
-                      value: option,
-                      child: Text(option),
-                    )).toList(),
+                    items:
+                        options
+                            .map(
+                              (option) => DropdownMenuItem(
+                                value: option,
+                                child: Text(option),
+                              ),
+                            )
+                            .toList(),
                     onChanged: (value) {
                       setState(() => _dropdownValue = value!);
                       if (value != options.first) {
@@ -634,8 +660,10 @@ class _DynamicComponentState extends State<DynamicComponent>
   }
 
   Widget _buildImage(BuildContext context) {
-    final color = PromptService.getColorFromString(widget.instruction.color) ?? Colors.grey;
-    
+    final color =
+        PromptService.getColorFromString(widget.instruction.color) ??
+        Colors.grey;
+
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4),
       child: Stack(
@@ -647,7 +675,11 @@ class _DynamicComponentState extends State<DynamicComponent>
             decoration: BoxDecoration(
               color: color.withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: color.withOpacity(0.3), width: 2, style: BorderStyle.solid),
+              border: Border.all(
+                color: color.withOpacity(0.3),
+                width: 2,
+                style: BorderStyle.solid,
+              ),
             ),
             child: Material(
               color: Colors.transparent,
@@ -661,7 +693,11 @@ class _DynamicComponentState extends State<DynamicComponent>
                     const SizedBox(height: 8),
                     Text(
                       widget.instruction.label ?? 'Image Placeholder',
-                      style: TextStyle(color: color, fontSize: 16, fontWeight: FontWeight.w500),
+                      style: TextStyle(
+                        color: color,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ],
                 ),
@@ -675,9 +711,11 @@ class _DynamicComponentState extends State<DynamicComponent>
   }
 
   Widget _buildIcon(BuildContext context) {
-    final color = PromptService.getColorFromString(widget.instruction.color) ?? Colors.blue;
+    final color =
+        PromptService.getColorFromString(widget.instruction.color) ??
+        Colors.blue;
     final iconData = _getIconFromLabel(widget.instruction.label);
-    
+
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4),
       child: Stack(
@@ -698,7 +736,11 @@ class _DynamicComponentState extends State<DynamicComponent>
                 const SizedBox(width: 12),
                 Text(
                   widget.instruction.label ?? 'Icon',
-                  style: TextStyle(color: color, fontSize: 16, fontWeight: FontWeight.w500),
+                  style: TextStyle(
+                    color: color,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ],
             ),
@@ -710,8 +752,10 @@ class _DynamicComponentState extends State<DynamicComponent>
   }
 
   Widget _buildDivider(BuildContext context) {
-    final color = PromptService.getColorFromString(widget.instruction.color) ?? Colors.grey;
-    
+    final color =
+        PromptService.getColorFromString(widget.instruction.color) ??
+        Colors.grey;
+
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: Stack(
@@ -739,8 +783,10 @@ class _DynamicComponentState extends State<DynamicComponent>
   }
 
   Widget _buildProgress(BuildContext context) {
-    final color = PromptService.getColorFromString(widget.instruction.color) ?? Colors.blue;
-    
+    final color =
+        PromptService.getColorFromString(widget.instruction.color) ??
+        Colors.blue;
+
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4),
       child: Stack(
@@ -763,12 +809,18 @@ class _DynamicComponentState extends State<DynamicComponent>
                     const SizedBox(width: 12),
                     Text(
                       widget.instruction.label ?? 'Progress',
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                     const Spacer(),
                     Text(
                       '${(_progressValue * 100).round()}%',
-                      style: TextStyle(color: color, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        color: color,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 ),
@@ -788,8 +840,10 @@ class _DynamicComponentState extends State<DynamicComponent>
   }
 
   Widget _buildListItem(BuildContext context) {
-    final color = PromptService.getColorFromString(widget.instruction.color) ?? Colors.blue;
-    
+    final color =
+        PromptService.getColorFromString(widget.instruction.color) ??
+        Colors.blue;
+
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4),
       child: Stack(
@@ -803,7 +857,10 @@ class _DynamicComponentState extends State<DynamicComponent>
               border: Border.all(color: Colors.grey.withOpacity(0.3)),
             ),
             child: ListTile(
-              leading: CircleAvatar(backgroundColor: color, child: Icon(Icons.person, color: Colors.white)),
+              leading: CircleAvatar(
+                backgroundColor: color,
+                child: Icon(Icons.person, color: Colors.white),
+              ),
               title: Text(widget.instruction.label ?? 'List Item'),
               subtitle: const Text('Subtitle text'),
               trailing: Icon(Icons.arrow_forward_ios, color: color),
@@ -817,8 +874,10 @@ class _DynamicComponentState extends State<DynamicComponent>
   }
 
   Widget _buildChip(BuildContext context) {
-    final color = PromptService.getColorFromString(widget.instruction.color) ?? Colors.blue;
-    
+    final color =
+        PromptService.getColorFromString(widget.instruction.color) ??
+        Colors.blue;
+
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4),
       child: Stack(
@@ -847,8 +906,10 @@ class _DynamicComponentState extends State<DynamicComponent>
   }
 
   Widget _buildBadge(BuildContext context) {
-    final color = PromptService.getColorFromString(widget.instruction.color) ?? Colors.red;
-    
+    final color =
+        PromptService.getColorFromString(widget.instruction.color) ??
+        Colors.red;
+
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4),
       child: Stack(
@@ -867,10 +928,17 @@ class _DynamicComponentState extends State<DynamicComponent>
                 Badge(
                   label: Text(widget.instruction.label ?? '5'),
                   backgroundColor: color,
-                  child: Icon(Icons.notifications, size: 32, color: Colors.grey[600]),
+                  child: Icon(
+                    Icons.notifications,
+                    size: 32,
+                    color: Colors.grey[600],
+                  ),
                 ),
                 const SizedBox(width: 16),
-                const Text('Notification with badge', style: TextStyle(fontSize: 16)),
+                const Text(
+                  'Notification with badge',
+                  style: TextStyle(fontSize: 16),
+                ),
               ],
             ),
           ),
@@ -881,8 +949,10 @@ class _DynamicComponentState extends State<DynamicComponent>
   }
 
   Widget _buildFloatingActionButton(context) {
-    final color = PromptService.getColorFromString(widget.instruction.color) ?? Colors.blue;
-    
+    final color =
+        PromptService.getColorFromString(widget.instruction.color) ??
+        Colors.blue;
+
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4),
       child: Stack(
@@ -903,7 +973,10 @@ class _DynamicComponentState extends State<DynamicComponent>
                 const SizedBox(width: 16),
                 Text(
                   widget.instruction.label ?? 'Floating Action Button',
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ],
             ),
@@ -915,9 +988,11 @@ class _DynamicComponentState extends State<DynamicComponent>
   }
 
   Widget _buildIconButton(BuildContext context) {
-    final color = PromptService.getColorFromString(widget.instruction.color) ?? Colors.blue;
+    final color =
+        PromptService.getColorFromString(widget.instruction.color) ??
+        Colors.blue;
     final iconData = _getIconFromLabel(widget.instruction.label);
-    
+
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4),
       child: Stack(
@@ -935,12 +1010,16 @@ class _DynamicComponentState extends State<DynamicComponent>
               children: [
                 IconButton(
                   icon: Icon(iconData, color: color),
-                  onPressed: () => _showInteractionSnackbar('Icon button tapped!'),
+                  onPressed:
+                      () => _showInteractionSnackbar('Icon button tapped!'),
                 ),
                 const SizedBox(width: 12),
                 Text(
                   widget.instruction.label ?? 'Icon Button',
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ],
             ),
@@ -952,8 +1031,10 @@ class _DynamicComponentState extends State<DynamicComponent>
   }
 
   Widget _buildTextButton(BuildContext context) {
-    final color = PromptService.getColorFromString(widget.instruction.color) ?? Colors.blue;
-    
+    final color =
+        PromptService.getColorFromString(widget.instruction.color) ??
+        Colors.blue;
+
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4),
       child: Stack(
@@ -964,12 +1045,18 @@ class _DynamicComponentState extends State<DynamicComponent>
             child: TextButton(
               style: TextButton.styleFrom(
                 foregroundColor: color,
-                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 16,
+                  horizontal: 24,
+                ),
               ),
               onPressed: () => _showInteractionSnackbar('Text button tapped!'),
               child: Text(
                 widget.instruction.label ?? 'Text Button',
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ),
@@ -980,8 +1067,10 @@ class _DynamicComponentState extends State<DynamicComponent>
   }
 
   Widget _buildOutlinedButton(BuildContext context) {
-    final color = PromptService.getColorFromString(widget.instruction.color) ?? Colors.blue;
-    
+    final color =
+        PromptService.getColorFromString(widget.instruction.color) ??
+        Colors.blue;
+
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4),
       child: Stack(
@@ -993,13 +1082,22 @@ class _DynamicComponentState extends State<DynamicComponent>
               style: OutlinedButton.styleFrom(
                 foregroundColor: color,
                 side: BorderSide(color: color),
-                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 16,
+                  horizontal: 24,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
-              onPressed: () => _showInteractionSnackbar('Outlined button tapped!'),
+              onPressed:
+                  () => _showInteractionSnackbar('Outlined button tapped!'),
               child: Text(
                 widget.instruction.label ?? 'Outlined Button',
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ),
@@ -1020,12 +1118,17 @@ class _DynamicComponentState extends State<DynamicComponent>
               obscureText: true,
               decoration: InputDecoration(
                 hintText: widget.instruction.label ?? 'Enter password...',
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 filled: true,
                 fillColor: Theme.of(context).cardColor,
                 prefixIcon: const Icon(Icons.lock),
                 suffixIcon: const Icon(Icons.visibility_off),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 16,
+                ),
               ),
             ),
           ),
@@ -1046,11 +1149,16 @@ class _DynamicComponentState extends State<DynamicComponent>
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
                 hintText: widget.instruction.label ?? 'Enter email...',
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 filled: true,
                 fillColor: Theme.of(context).cardColor,
                 prefixIcon: const Icon(Icons.email),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 16,
+                ),
               ),
             ),
           ),
@@ -1071,11 +1179,16 @@ class _DynamicComponentState extends State<DynamicComponent>
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 hintText: widget.instruction.label ?? 'Enter number...',
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 filled: true,
                 fillColor: Theme.of(context).cardColor,
                 prefixIcon: const Icon(Icons.numbers),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 16,
+                ),
               ),
             ),
           ),
@@ -1096,11 +1209,16 @@ class _DynamicComponentState extends State<DynamicComponent>
               maxLines: 4,
               decoration: InputDecoration(
                 hintText: widget.instruction.label ?? 'Enter text...',
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 filled: true,
                 fillColor: Theme.of(context).cardColor,
                 prefixIcon: const Icon(Icons.text_snippet),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 16,
+                ),
               ),
             ),
           ),
@@ -1115,29 +1233,39 @@ class _DynamicComponentState extends State<DynamicComponent>
   IconData _getIconFromLabel(String? label) {
     if (label == null) return Icons.star;
     final lowerLabel = label.toLowerCase();
-    
+
     if (lowerLabel.contains('heart')) return Icons.favorite;
     if (lowerLabel.contains('star')) return Icons.star;
     if (lowerLabel.contains('home')) return Icons.home;
-    if (lowerLabel.contains('user') || lowerLabel.contains('person')) return Icons.person;
+    if (lowerLabel.contains('user') || lowerLabel.contains('person'))
+      return Icons.person;
     if (lowerLabel.contains('settings')) return Icons.settings;
     if (lowerLabel.contains('search')) return Icons.search;
     if (lowerLabel.contains('phone')) return Icons.phone;
-    if (lowerLabel.contains('email') || lowerLabel.contains('mail')) return Icons.email;
-    if (lowerLabel.contains('location') || lowerLabel.contains('map')) return Icons.location_on;
+    if (lowerLabel.contains('email') || lowerLabel.contains('mail'))
+      return Icons.email;
+    if (lowerLabel.contains('location') || lowerLabel.contains('map'))
+      return Icons.location_on;
     if (lowerLabel.contains('camera')) return Icons.camera_alt;
     if (lowerLabel.contains('music')) return Icons.music_note;
     if (lowerLabel.contains('video')) return Icons.videocam;
-    if (lowerLabel.contains('photo') || lowerLabel.contains('image')) return Icons.photo;
+    if (lowerLabel.contains('photo') || lowerLabel.contains('image'))
+      return Icons.photo;
     if (lowerLabel.contains('calendar')) return Icons.calendar_today;
-    if (lowerLabel.contains('clock') || lowerLabel.contains('time')) return Icons.access_time;
-    if (lowerLabel.contains('notification') || lowerLabel.contains('bell')) return Icons.notifications;
+    if (lowerLabel.contains('clock') || lowerLabel.contains('time'))
+      return Icons.access_time;
+    if (lowerLabel.contains('notification') || lowerLabel.contains('bell'))
+      return Icons.notifications;
     if (lowerLabel.contains('menu')) return Icons.menu;
-    if (lowerLabel.contains('close') || lowerLabel.contains('x')) return Icons.close;
-    if (lowerLabel.contains('check') || lowerLabel.contains('tick')) return Icons.check;
-    if (lowerLabel.contains('add') || lowerLabel.contains('plus')) return Icons.add;
+    if (lowerLabel.contains('close') || lowerLabel.contains('x'))
+      return Icons.close;
+    if (lowerLabel.contains('check') || lowerLabel.contains('tick'))
+      return Icons.check;
+    if (lowerLabel.contains('add') || lowerLabel.contains('plus'))
+      return Icons.add;
     if (lowerLabel.contains('edit')) return Icons.edit;
-    if (lowerLabel.contains('delete') || lowerLabel.contains('trash')) return Icons.delete;
+    if (lowerLabel.contains('delete') || lowerLabel.contains('trash'))
+      return Icons.delete;
     if (lowerLabel.contains('share')) return Icons.share;
     if (lowerLabel.contains('download')) return Icons.download;
     if (lowerLabel.contains('upload')) return Icons.upload;
@@ -1149,7 +1277,7 @@ class _DynamicComponentState extends State<DynamicComponent>
     if (lowerLabel.contains('warning')) return Icons.warning;
     if (lowerLabel.contains('error')) return Icons.error;
     if (lowerLabel.contains('success')) return Icons.check_circle;
-    
+
     return Icons.star; // Default icon
   }
 

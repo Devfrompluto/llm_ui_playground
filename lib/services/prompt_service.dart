@@ -67,6 +67,27 @@ class PromptService {
         }
       }
 
+      // Title changes - FIXED: Added more patterns and improved extraction
+      if (_containsAnyPattern(cleanPrompt, [
+        'change title to',
+        'set title to',
+        'title to',
+        'rename to',
+        'change title',
+        'set title',
+        'update title',
+        'make title',
+        'change the title to',
+        'set the title to',
+        'change app title to',
+        'set app title to',
+      ])) {
+        final label = _extractTitleLabel(cleanPrompt);
+        if (label != null && label.isNotEmpty) {
+          return LayoutInstruction(action: 'change_title', label: label);
+        }
+      }
+
       // Button additions
       if (_containsAnyPattern(cleanPrompt, [
         'add a button',
@@ -173,19 +194,6 @@ class PromptService {
         );
       }
 
-      // Title changes
-      if (_containsAnyPattern(cleanPrompt, [
-        'change title to',
-        'set title to',
-        'title to',
-        'rename to',
-      ])) {
-        final label = _extractTitleLabel(cleanPrompt);
-        if (label != null && label.isNotEmpty) {
-          return LayoutInstruction(action: 'change_title', label: label);
-        }
-      }
-
       // Reset commands
       if (_containsAnyPattern(cleanPrompt, [
         'reset',
@@ -201,6 +209,7 @@ class PromptService {
       // Fallback for exact matches
       return _getExactInstruction(cleanPrompt);
     } catch (e) {
+      print('Error in _getHardcodedInstruction: $e');
       return null;
     }
   }
@@ -209,6 +218,7 @@ class PromptService {
     try {
       return patterns.any((pattern) => prompt.contains(pattern));
     } catch (e) {
+      print('Error in _containsAnyPattern: $e');
       return false;
     }
   }
@@ -237,12 +247,14 @@ class PromptService {
       }
       return null;
     } catch (e) {
+      print('Error in _extractColor: $e');
       return null;
     }
   }
 
   static String? _extractLabel(String prompt) {
     try {
+      // FIXED: Using raw strings and proper escaping
       final labelPatterns = [
         RegExp(r'with text "([^"]+)"'),
         RegExp(r"with text '([^']+)'"),
@@ -258,40 +270,103 @@ class PromptService {
       ];
 
       for (final pattern in labelPatterns) {
-        final match = pattern.firstMatch(prompt);
-        if (match != null && match.group(1) != null) {
-          return match.group(1)!.trim();
+        try {
+          final match = pattern.firstMatch(prompt);
+          if (match != null && match.groupCount >= 1) {
+            final group = match.group(1);
+            if (group != null && group.trim().isNotEmpty) {
+              return group.trim();
+            }
+          }
+        } catch (e) {
+          print('Error matching pattern ${pattern.pattern}: $e');
+          continue;
         }
       }
       return null;
     } catch (e) {
+      print('Error in _extractLabel: $e');
       return null;
     }
   }
 
+  // FIXED: Improved title label extraction with better error handling
   static String? _extractTitleLabel(String prompt) {
     try {
+      // FIXED: Using raw strings and safer regex patterns
       final titlePatterns = [
-        RegExp(r'change title to\s+(.+)'),
-        RegExp(r'set title to\s+(.+)'),
-        RegExp(r'title to\s+(.+)'),
-        RegExp(r'rename to\s+(.+)'),
+        // Exact patterns with "to"
+        RegExp(r'change title to\s+(.+)', caseSensitive: false),
+        RegExp(r'set title to\s+(.+)', caseSensitive: false),
+        RegExp(r'title to\s+(.+)', caseSensitive: false),
+        RegExp(r'rename to\s+(.+)', caseSensitive: false),
+        RegExp(r'change the title to\s+(.+)', caseSensitive: false),
+        RegExp(r'set the title to\s+(.+)', caseSensitive: false),
+        RegExp(r'change app title to\s+(.+)', caseSensitive: false),
+        RegExp(r'set app title to\s+(.+)', caseSensitive: false),
+
+        // Patterns without "to" but with context
+        RegExp(r'change title\s+(.+)', caseSensitive: false),
+        RegExp(r'set title\s+(.+)', caseSensitive: false),
+        RegExp(r'update title\s+(.+)', caseSensitive: false),
+        RegExp(r'make title\s+(.+)', caseSensitive: false),
+
+        // Patterns with quotes - FIXED: Better quote handling
+        RegExp(r'''title\s*["']([^"']+)["']''', caseSensitive: false),
+        RegExp(r'''change.*title.*["']([^"']+)["']''', caseSensitive: false),
+        RegExp(r'''set.*title.*["']([^"']+)["']''', caseSensitive: false),
       ];
 
       for (final pattern in titlePatterns) {
-        final match = pattern.firstMatch(prompt);
-        if (match != null && match.group(1) != null) {
-          return match.group(1)!.trim();
+        try {
+          final match = pattern.firstMatch(prompt);
+          if (match != null && match.groupCount >= 1) {
+            final group = match.group(1);
+            if (group != null) {
+              String title = group.trim();
+
+              // Clean up the extracted title
+              title = title.replaceAll(
+                RegExp(r'''^["']+|["']+$'''),
+                '',
+              ); // Remove surrounding quotes
+              title = title.replaceAll(
+                RegExp(r'\s+'),
+                ' ',
+              ); // Normalize whitespace
+
+              if (title.isNotEmpty) {
+                return title;
+              }
+            }
+          }
+        } catch (e) {
+          print('Error matching title pattern ${pattern.pattern}: $e');
+          continue;
         }
       }
+
+      // Fallback: Look for common title phrases
+      if (prompt.contains('my app')) {
+        return 'My App';
+      }
+      if (prompt.contains('welcome')) {
+        return 'Welcome';
+      }
+      if (prompt.contains('home')) {
+        return 'Home';
+      }
+
       return null;
     } catch (e) {
+      print('Error extracting title label: $e');
       return null;
     }
   }
 
   static String? _extractPlaceholder(String prompt) {
     try {
+      // FIXED: Using raw strings for better readability and safety
       final placeholderPatterns = [
         RegExp(r'placeholder "([^"]+)"'),
         RegExp(r"placeholder '([^']+)'"),
@@ -304,19 +379,29 @@ class PromptService {
       ];
 
       for (final pattern in placeholderPatterns) {
-        final match = pattern.firstMatch(prompt);
-        if (match != null && match.group(1) != null) {
-          return match.group(1)!.trim();
+        try {
+          final match = pattern.firstMatch(prompt);
+          if (match != null && match.groupCount >= 1) {
+            final group = match.group(1);
+            if (group != null && group.trim().isNotEmpty) {
+              return group.trim();
+            }
+          }
+        } catch (e) {
+          print('Error matching placeholder pattern ${pattern.pattern}: $e');
+          continue;
         }
       }
       return null;
     } catch (e) {
+      print('Error in _extractPlaceholder: $e');
       return null;
     }
   }
 
   static double? _extractSize(String prompt) {
     try {
+      // FIXED: Using raw strings and better error handling
       final sizePatterns = [
         RegExp(r'size (\d+)'),
         RegExp(r'font size (\d+)'),
@@ -328,21 +413,39 @@ class PromptService {
       ];
 
       for (final pattern in sizePatterns) {
-        final match = pattern.firstMatch(prompt);
-        if (match != null) {
-          final sizeStr = match.group(0)!.toLowerCase();
-          if (sizeStr.contains('small')) return 12.0;
-          if (sizeStr.contains('medium')) return 16.0;
-          if (sizeStr.contains('large') || sizeStr.contains('big')) return 20.0;
+        try {
+          final match = pattern.firstMatch(prompt);
+          if (match != null) {
+            final matchedText = match.group(0);
+            if (matchedText != null) {
+              final sizeStr = matchedText.toLowerCase();
+              if (sizeStr.contains('small')) return 12.0;
+              if (sizeStr.contains('medium')) return 16.0;
+              if (sizeStr.contains('large') || sizeStr.contains('big'))
+                return 20.0;
 
-          final numberMatch = match.group(1);
-          if (numberMatch != null) {
-            return double.tryParse(numberMatch);
+              // Try to extract number
+              if (match.groupCount >= 1) {
+                final numberMatch = match.group(1);
+                if (numberMatch != null) {
+                  final parsedSize = double.tryParse(numberMatch);
+                  if (parsedSize != null &&
+                      parsedSize > 0 &&
+                      parsedSize <= 100) {
+                    return parsedSize;
+                  }
+                }
+              }
+            }
           }
+        } catch (e) {
+          print('Error matching size pattern ${pattern.pattern}: $e');
+          continue;
         }
       }
       return null;
     } catch (e) {
+      print('Error in _extractSize: $e');
       return null;
     }
   }
@@ -388,8 +491,19 @@ class PromptService {
           );
         case 'reset':
           return LayoutInstruction(action: 'reset');
+        // FIXED: Added more title change exact matches
         case 'change title to welcome':
-          return LayoutInstruction(action: 'change_title', label: 'Welcome!');
+          return LayoutInstruction(action: 'change_title', label: 'Welcome');
+        case 'change title to my app':
+          return LayoutInstruction(action: 'change_title', label: 'My App');
+        case 'change title to home':
+          return LayoutInstruction(action: 'change_title', label: 'Home');
+        case 'set title to welcome':
+          return LayoutInstruction(action: 'change_title', label: 'Welcome');
+        case 'set title to my app':
+          return LayoutInstruction(action: 'change_title', label: 'My App');
+        case 'title to my app':
+          return LayoutInstruction(action: 'change_title', label: 'My App');
         case 'add a green container':
           return LayoutInstruction(
             action: 'add_component',
@@ -412,6 +526,7 @@ class PromptService {
           return null;
       }
     } catch (e) {
+      print('Error in _getExactInstruction: $e');
       return null;
     }
   }
@@ -448,6 +563,7 @@ class PromptService {
           return null;
       }
     } catch (e) {
+      print('Error in getColorFromString: $e');
       return null;
     }
   }
@@ -484,6 +600,7 @@ class PromptService {
       'change background to green',
       'change title to My App',
       'set background yellow',
+      'change title to Welcome',
 
       // Utility commands
       'reset',
@@ -531,6 +648,7 @@ class PromptService {
 
       return validPatterns.any((pattern) => cleanCommand.contains(pattern));
     } catch (e) {
+      print('Error in isValidCommand: $e');
       return false;
     }
   }
